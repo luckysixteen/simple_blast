@@ -24,46 +24,60 @@ def search(request):
 
         print(query.query)
 
-        # raw_results = blast_search(query_text)
-        # for i in range(len(raw_results)):
-        #     (sstart, send, sstrand, evalue, pident) = raw_results[i]
-        #     seq = extract_sequence(int(sstart), int(send), sstrand)
-        #     results = BlastResult(
-        #         blast_job = query,
-        #         sstart = int(sstart),
-        #         send = int(send),
-        #         sstrand = sstrand,
-        #         evalue = float(evalue),
-        #         pident = float(pident),
-        #         sequence = seq
-        #     )
-        #     response_data[i] = {}
-        #     response_data[i]['sstart'] = sstart
-        #     response_data[i]['send'] = send
-        #     response_data[i]['sstrand'] = sstrand
-        #     response_data[i]['evalue'] = evalue
-        #     response_data[i]['pident'] = pident
-        #     response_data[i]['sequence'] = seq
-        #     # results.save()
-        # response_data['length'] = len(raw_results)
+        raw_results = blast_search(query_text)
+        for i in range(len(raw_results)):
+            (sstart, send, sstrand, evalue, pident) = raw_results[i]
+            seq = extract_sequence(int(sstart), int(send), sstrand)
+            results = BlastResult(
+                blast_job = query,
+                sstart = int(sstart),
+                send = int(send),
+                sstrand = sstrand,
+                evalue = float(evalue),
+                pident = float(pident),
+                sequence = seq
+            )
+            response_data[i] = {}
+            response_data[i]['sstart'] = sstart
+            response_data[i]['send'] = send
+            response_data[i]['sstrand'] = sstrand
+            response_data[i]['evalue'] = evalue
+            response_data[i]['pident'] = pident
+            response_data[i]['sequence'] = seq
+            # results.save()
+        response_data['length'] = len(raw_results)
 
-        response_data = {
-            0: {
-                'sstart':
-                '7561',
-                'send':
-                '7770',
-                'sstrand':
-                'N/A',
-                'evalue':
-                '2.02e-79',
-                'pidnet':
-                '99.524',
-                'sequence':
-                'CATATACCATGCCGGTCCGCCACGAAACTGCCCATTGACGTCACGTTCTTTATAAAGTTGTGCCAGAGAACATTCGGCAAACGAGGTCGCCATGCCGATAAACGCGGCAACCCACATCCAAAAGACGGCTCCAGGTCCAC'
-            },
-            'length': 1
-        }
+        # response_data = {
+        #     0: {
+        #         'sstart':
+        #         '7561',
+        #         'send':
+        #         '7770',
+        #         'sstrand':
+        #         'N/A',
+        #         'evalue':
+        #         '2.02e-79',
+        #         'pident':
+        #         '99.524',
+        #         'sequence':
+        #         'CATATACCATGCCGGTCCGCCACGAAACTGCCCATTGACGTCACGTTCTTTATAAAGTTGTGCCAGAGAACATTCGGCAAACGAGGTCGCCATGCCGATAAACGCGGCAACCCACATCCAAAAGACGGCTCCAGGTCCAC'
+        #     },
+        #     1: {
+        #         'sstart':
+        #         '7561',
+        #         'send':
+        #         '7770',
+        #         'sstrand':
+        #         'N/A',
+        #         'evalue':
+        #         '2.02e-79',
+        #         'pident':
+        #         '99.524',
+        #         'sequence':
+        #         'CATATACCATGCCGGTCCGCCACGAAACTGCCCATTGACGTCACGTTCTTTATAAAGTTGTGCCAGAGAACATTCGGCAAACGAGGTCGCCATGCCGATAAACGCGGCAACCCACATCCAAAAGACGGCTCCAGGTCCAC'
+        #     },
+        #     'length': 1
+        # }
         return HttpResponse(
             json.dumps(response_data),
             content_type='application/json'

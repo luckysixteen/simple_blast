@@ -20,39 +20,34 @@
         <h>Blast Search</h>
         
     </body> -->
-    <body>
-        <div class="cover-container d-flex w-100 h-100 p-3 mx-auto flex-column">
-            <header class="masthead mb-auto">
+    <body class="container">
+        <div class="cover-container d-flex w-100 p-3 mx-auto flex-column">
+            <header class="masthead mb-5">
                 <div class="inner">
                     <h3 class="masthead-brand">Blast Search</h3>
-                    <nav class="nav nav-masthead justify-content-center">
-                        <a class="nav-link active" href="#">Home</a>
-                        <a class="nav-link" href="#">Features</a>
-                        <a class="nav-link" href="#">Contact</a>
-                    </nav>
                 </div>
             </header>
     
             <main role="main" class="inner cover">
                 <h1 class="cover-heading">A Simple Blast Search Tool</h1>
-                <p class="lead">blast search of a single sequence on a given bacterial genome.</p>
+                <p class="lead">Enter a single DNA sequence containing only the letter A,G,C and T, blast search of the sequence on a given bacterial genome.</p>
                 <form class="mt-2 mt-md-0" id="search-form">
                     {% csrf_token %}
-                    <textarea id="query-text" class="form-control" type="text" placeholder="DNA sequence containing only the letter A,G,C and T" aria-label="Search"></textarea>
+                    <textarea id="query-text" class="form-control float-left" type="text" rows="8" cols="30" placeholder="DNA sequence (no more than 255 characters)" aria-label="Search"></textarea>
                     <button id='searchbtn' class="btn btn-secondary my-2" type="submit">Search</button>
                 </form>
             </main>
-            <div id="results">
-
-
-            </div>
+            
     
-            <footer class="mastfoot mt-auto">
-                <div class="inner">
-                    <p>Created by Jen</p>
-                </div>
-            </footer>
+            
+            
         </div>
+        <div id="results"></div>
+        <footer class="mastfoot mt-auto">
+            <div class="inner">
+                <p>Created by Jen</p>
+            </div>
+        </footer>
     
     <script src="../static/main.js"></script>
     </body>
@@ -60,27 +55,45 @@
 
 
 
-<li id='post-" + json.postpk + "'><strong>" + json.text + "</strong> - <em> " + json.author + "</em> - <span> " +
-        json.created +
-        "</span> - <a href='#' class='close'>&times;</a></li>
-
-
-
-        <div class="card">
+        <!-- <div class="card">
             <div class="card-header">
-                Featured
+                <div class="float-left font-weight-bolder">Result</div>
+                <div class="float-right">Time comsuming: min sec</div>
             </div>
             <div class="card-body">
-                <h5 class="card-title">Special title treatment</h5>
-                <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
-                <a href="#" class="btn btn-primary">Go somewhere</a>
+                <h5 class="card-title">Match 1</h5>
+                <div class="container-fluid card-result">
+                    <div class='row'>
+                        <div class="col-4">
+                            <span class="badge badge-info">E-Value</span> 2e-79
+                        </div>
+                        <div class="col-8">
+                            <span class="badge badge-info">Identities</span> 99%
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class='col-2'>
+                            <p class="font-weight-bold">Query 1 </p>
+                        </div>
+                        <div class='col-9'>
+                            <p>CATATACCATGCCGGTCCGCCACGAAACTGCCCATTGACGTCACGTTCTTTATAAAGTTG</p>
+                        </div>
+                    
+                    <div class='col-1'>
+                        <p class="font-weight-bold">60</p>
+                    </div>
+                    </div>
+                    <div class="row">
+                        <div class='col-2'>
+                            <p class="font-weight-bold">Sbjct 7293</p>
+                        </div>
+                        <div class='col-9'>
+                            <p>CATATACCATGCCGGTCCGCCACGAAACTGCCCATTGACGTCACGTTCTTTATAAAGTTG</p>
+                        </div>
+                        <div class='col-1'>
+                            <p class="font-weight-bold">7493</p>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div class="card-body">
-                <h5 class="card-title">Special title treatment</h5>
-                <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
-                <a href="#" class="btn btn-primary">Go somewhere</a>
-            </div>
-            <!-- <div class="card-footer text-muted">
-                2 days ago
-            </div> -->
-        </div>
+        </div> -->

@@ -3,59 +3,76 @@ $(function() {
     // Submit sequence on submit
     $('#search-form').on('submit', function (event) {
         event.preventDefault();
-        $('#searchbtn').prop('disabled', true);
-        $('#searchbtn').text(' Searching from Database...')
-        $('#searchbtn').prepend("<span class='spinner-border spinner-border-sm' role='status' aria-hidden='true'></span>")
-        // $('#results').prepend("<div class='spinner-border' role='status'><span class='sr-only'>Loading...</span></div>")
-        console.log("form submitted!")  // sanity check
-        search();
+        var sequence = $('#query-text').val()
+        var sequence = sequence.toUpperCase().replace(/\s+/g, '')
+        if (sequence.match(/[^GCTA]/)) {
+            $('.lead').after('<div class="alert alert-warning" role="alert">please enter only A, G, C, T sequence</div>')
+        } else {
+            $('.alert').remove()
+            $('#searchbtn').prop('disabled', true);
+            $('#searchbtn').text(' Searching from Database...')
+            $('#searchbtn').prepend("<span class='spinner-border spinner-border-sm' role='status' aria-hidden='true'></span>")
+            const start = Date.now()
+            search(sequence, start);
+        }
+        
     });
 
-    // // Delete post on click
-    // $("#talk").on('click', 'a[id^=delete-post-]', function () {
-    //     var post_primary_key = $(this).attr('id').split('-')[2];
-    //     console.log(post_primary_key) // sanity check
-    //     delete_post(post_primary_key);
-    // });
-
     // AJAX for searching
-    function search() {
-        
+    function search(sequence, start) {
         $.ajax({
-            url: "search/", // the endpoint
-            type: "POST", // http method
-            data: { query: $('#query-text').val() }, // data sent with the post request
-            // handle a successful response
+            url: "search/",
+            type: "POST",
+            data: { query: sequence },
             success: function (json) {
+                const query_text = sequence
+                const group = Math.floor(query_text.length / 60)
+                var seconds = (Date.now() - start) / 1000;
+                var minutes = Math.floor(seconds / 60);
+                seconds = (seconds % 60).toFixed(3)
+                
                 $('#query-text').val('');
                 $('#searchbtn').prop('disabled', false);
                 $('.spinner-border').remove()
                 $('#searchbtn').text('Search')
-                console.log(json); // log the returned json to the console
+                $("#results").prepend("<div class='card my-5'><div class='card-header'><div class='float-left font-weight-bolder'>Result</div><div class='float-right'>Time: " + minutes + "min " + seconds+ "sec</div></div><div class='card-body'></div></div>")
+                if (json.length === 0) {
+                    $(".card-body").first().prepend('<p>No match found</p>')
+                } else {
+                    count = 0
+                    Object.entries(json).forEach(([key, value]) => {
+                        if (key !== 'length') {
+                            count = count + 1
+                            console.log(value);
+                            $(".card-body").first().append('<h5 class="card-title">Match ' + count +'</h5><div class="container-fluid card-result mb-4"></div>')
+                            $(".card-body:first .card-result").last().append('<div class="row"><div class="col-4"><span class="badge badge-info">E-Value</span>' + value.evalue + '</div><div class="col-8"><span class="badge badge-info">Identities</span>' + value.pident + '%</div></div>')
+                            for (i = 0; i < group; i++) {
+                                var newQuery = '<div class="row"><div class="col-2"><p class="font-weight-bold">Query ' + (i * 60 + 1) + '</p></div><div class="col-9"><p>' + query_text.slice(i * 60 + 1, (i+1) * 60 + 1)+'</p></div><div class="col-1"><p class="font-weight-bold">'+ (i+1)*60 + '</p></div></div>'
+                                var newSbjct = '<div class="row"><div class="col-2"><p class="font-weight-bold">Sbjct ' + (parseInt(value.sstart) + i * 60) + '</p></div><div class="col-9"><p>' + value.sequence.slice(i * 60 + 1, (i + 1) * 60 + 1) + '</p></div><div class="col-1"><p class="font-weight-bold">' + (parseInt(value.sstart) + (i + 1) * 60 - 1) + '</p></div></div>'
+                                console.log(i)
+                                $(".card-body:first .card-result").last().append(newQuery, newSbjct)
+                            }
+                            if (query_text.length % 60 !== 0) {
+                                var newQuery = '<div class="row"><div class="col-2"><p class="font-weight-bold">Query ' + (group * 60 + 1) + '</p></div><div class="col-9"><p>' + query_text.slice(i * 60 + 1, (i + 1) * 60 + 1) + '</p></div><div class="col-1"><p class="font-weight-bold">' + query_text.length + '</p></div></div>'
+                                var newSbjct = '<div class="row"><div class="col-2"><p class="font-weight-bold">Sbjct ' + (parseInt(value.sstart) + group * 60) + '</p></div><div class="col-9"><p>' + value.sequence.slice(group * 60 + 1) + '</p></div><div class="col-1"><p class="font-weight-bold">' + value.send + '</p></div></div>'
+                                console.log(i)
+                                $(".card-body:first .card-result").last().append(newQuery, newSbjct)
+                            }
+                        }
+                    });
+                }
                 
-                $("#results").prepend("<li id='post'><strong>" + json.length + "</strong> - <em> " + json[0].sstart + "</em> - <span> " + json[0].send +
-                    "</span> - <a href='#' class='close'>&times;</a></li>");
             },
             // handle a non-successful response
             error: function (xhr, errmsg, err) {
                 $('#searchbtn').prop('disabled', false);
                 $('.spinner-border').remove()
                 $('#searchbtn').text('Search')
-                $('#results').html("<div class='alert-box alert radius' data-alert>Oops! We have encountered an error: " + errmsg +
-                    " <a href='#' class='close'>&times;</a></div>"); // add the error to the dom
-                console.log(xhr.status + ": " + xhr.responseText); // provide a bit more info about the error to the console
+                $('#results').html("<div class='alert alert-warning alert-dismissible fade show' role='alert'>Oops! We have encountered an error:(<button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'>&times;</span></button></div>");
+                console.log(xhr.status + ": " + xhr.responseText);
             }
         });
     };
-
-
-
-
-
-
-
-
-
 
     // This function gets cookie with a given name
     function getCookie(name) {

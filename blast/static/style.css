@@ -1,3 +1,27 @@
 body {
     background: white url("images/background.gif") no-repeat;
+    background-position: right top;
+    background-color: rgb(243, 243, 243);
 }
+
+.card {
+    min-width: 850px;
+}
+.card-body{
+    margin: 0, 0, 0, 0;
+}
+.card-result {
+    font-family: 'Courier New', Courier, monospace;
+}
+.card-result p{
+    margin: 0;
+}
+.card-result div{
+    padding-left: 0;
+    padding-right: 1rem;
+}
+.cover-container {
+    max-width: 600px;
+}
+
+
