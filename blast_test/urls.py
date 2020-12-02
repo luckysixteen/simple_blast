@@ -18,6 +18,6 @@ from django.urls import include, path
 # import blast.views as views
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('', include('blast.urls')), #homepage
+    path('', include('blast.urls')),
+    path('admin/', admin.site.urls)
 ]

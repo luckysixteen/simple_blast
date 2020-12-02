@@ -3,8 +3,9 @@ from django.db import models
 
 class BlastJob(models.Model):
     query = models.CharField(max_length=255, blank=True, null=True)
-    # status = models.CharField(max_length=10, blank=True, null=True)
-    created = models.DateTimeField(auto_now_add=True)
+    # Status: pending, done
+    status = models.CharField(max_length=10, blank=True, null=True)
+    # created = models.DateTimeField(auto_now_add=True)
 
 
 class BlastResult(models.Model):
@@ -13,7 +14,7 @@ class BlastResult(models.Model):
                                   blank=False,
                                   null=False,
                                   on_delete=models.CASCADE)
-    # result_no = models.IntegerField(blank=False, null=False)
+    result_no = models.IntegerField(blank=False, null=False)
 
     # start of alignment in subject
     sstart = models.IntegerField(blank=False, null=False)
